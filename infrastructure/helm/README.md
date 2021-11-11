@@ -1,8 +1,8 @@
-helm template test . -f values.yaml -f values/dev.yaml --set fullnameOverride=test
+#helm template test . -f values.yaml -f values/dev.yaml --set fullnameOverride=test
 
 helm template test . -f values.yaml -f values/dev.yaml --set fullnameOverride=test | kubectl apply -f -
 helm template test . -f values.yaml -f values/dev.yaml --set fullnameOverride=test | kubectl delete -f -
-kubectl port-forward <pod> <port>
+#alernative to nginx kubectl port-forward <pod> <port>
 
 https://www.michaelrose.dev/posts/k8s-ingress-docker-desktop/
 https://github.com/kubernetes/ingress-nginx/issues/7686
@@ -19,3 +19,5 @@ The following two options are the ones I found most useful:
     -b – use a buildspec.yml file elsewhere. By default the script will look for buildspec.yml in the current directory. Override with this option.
     -e – specify a file to use as environment variable mappings to pass in.
 	-a - output directory
+
+https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html
