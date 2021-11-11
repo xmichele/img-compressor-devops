@@ -34,5 +34,5 @@ networks:
   my_network:
 
 #volumes:
-#  sonarqube_data:
-#    name: data-svc-app_sonar_data
+#  my_data:
+#    name: my_data
