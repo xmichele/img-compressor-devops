@@ -1,0 +1,68 @@
+# Numero di repliche
+replicaCount: 1
+
+# Probe del container principale
+probes:
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    successThreshold: 1
+    tcpSocket:
+      port: tcp
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    successThreshold: 1
+    tcpSocket:
+      port: tcp
+    timeoutSeconds: 1
+
+# Questi campi saranno  cambiati dall'esterno
+image:
+  repository: image_compressor 
+  pullPolicy: Never
+  tag: latest
+
+# Eventuale secret
+imagePullSecrets:
+  - name: registry-cred
+
+# Annotazioni 
+podAnnotations: {}
+  # prometheus.io/scrape: 'true'
+  # prometheus.io/port: '8080'  
+  # prometheus.io/path: '/actuator/prometheus'  
+
+securityContext: {}
+
+service:
+  type: NodePort
+  port: 3000
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  #annotations:
+    #kubernetes.io/ingress.class: nginx
+    #nginx.ingress.kubernetes.io/affinity: cookie
+    #nginx.ingress.kubernetes.io/session-cookie-hash: sha1
+    #nginx.ingress.kubernetes.io/session-cookie-name: route
+  #tlsSecretName: laziocrea-tls
+
+resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

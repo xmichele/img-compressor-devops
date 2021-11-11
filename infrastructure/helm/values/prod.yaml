@@ -1,0 +1,13 @@
+# Inserire qui le variabili d'ambiente
+custom:
+  envConfigMap:
+  envSecret:
+
+# Override dei valori presenti in values.yaml
+# resources:
+#     limits:
+#       cpu: 200m
+#       memory: 256Mi
+#     requests:
+#       cpu: 200m
+#       memory: 256Mi

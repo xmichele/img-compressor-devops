@@ -1,0 +1,138 @@
+# Inserire qui le variabili d'ambiente
+custom:
+  envConfigMap:
+    MY_VAR: myvalue
+  envSecret:
+    MY_SECRET: mysecretvalue
+    
+ingress:
+  fqdn: example-spring-mvc-dev.comune.napoli.it
+
+logback_xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+        <appender name="Console"
+            class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>%d{ISO8601} %-5level [%t] %C{1.}: %msg%n%throwable</Pattern>
+            </layout>
+        </appender>
+        <root level="info">
+            <appender-ref ref="Console" />
+        </root>
+    </configuration>
+
+servizionline_pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIDFDCCAn2gAwIBAgIBADANBgkqhkiG9w0BAQUFADCBpjELMAkGA1UEBhMCSVQx
+    CzAJBgNVBAgMAk5BMQ8wDQYDVQQHDAZOYXBvbGkxFzAVBgNVBAoMDkNvbXVuZWRp
+    bmFwb2xpMRMwEQYDVQQLDAphc3Muc3ZpdWx1MRUwEwYDVQQDDAxhc3Muc3ZpbHVw
+    cG8xNDAyBgkqhkiG9w0BCQEWJWFzc2Vzc29yYXRvLnN2aWx1cHBvQGNvbXVuZS5u
+    YXBvbGkuaXQwHhcNMTIwNjI3MDgyNzAxWhcNMTMwNjI3MDgyNzAxWjCBpjELMAkG
+    A1UEBhMCSVQxCzAJBgNVBAgMAk5BMQ8wDQYDVQQHDAZOYXBvbGkxFzAVBgNVBAoM
+    DkNvbXVuZWRpbmFwb2xpMRMwEQYDVQQLDAphc3Muc3ZpdWx1MRUwEwYDVQQDDAxh
+    c3Muc3ZpbHVwcG8xNDAyBgkqhkiG9w0BCQEWJWFzc2Vzc29yYXRvLnN2aWx1cHBv
+    QGNvbXVuZS5uYXBvbGkuaXQwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAL0Z
+    GWDc7BS6jhV7gFYanGgEX7yIfudDGPATr3Keq1AsPapDnQYAIJpKuouhANqMYHBW
+    VdP89PjqqYpLPRT86ZX1eOj4sFXtpyUIHIA9545a2vLhvfVWNFHw6wzC3mvH2d6k
+    uhl4YXGoWkMT0kkpjt4HeqNci91IsexZ8bjh7XfDAgMBAAGjUDBOMB0GA1UdDgQW
+    BBQ0Eqdqyxn40PjorULxQqLa+lgRijAfBgNVHSMEGDAWgBQ0Eqdqyxn40PjorULx
+    QqLa+lgRijAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4GBAJmrFpbmaZAF
+    uM3vYdONIQS+LmPnP2HnAWfvvt0BRD7sl8kFZ9XcRY+O0dKeS8BYDn0DME4HdKLZ
+    jdiHkKs0lAVvDFk6VeQskqijio1FBvsGKRK9uCxqPPUv7o/Ty3N4iRXsPTav/ZCD
+    RZoDJ9PX4/oQXyN1Jk4j9mPnRT2L/DIz
+    -----END CERTIFICATE-----
+
+application_yaml: |
+    server:
+      port: 9080
+    spring:
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: https://login-potesstest.comune.napoli.it/oauth2/oidcdiscovery
+              jwk-set-uri: https://login-potesstest.comune.napoli.it/t/potess.frontoffice.local/oauth2/jwks
+      datasource:
+        driver-class-name: oracle.jdbc.OracleDriver
+        url: jdbc:oracle:thin:@172.30.36.59:1521:ORCLCDB
+        username: PORTAL_COMMON_SERVICES
+        password: password.1
+      jpa:
+        show-sql: true
+        database-platform: org.eclipse.persistence.platform.database.Oracle12Platform
+      main:
+        allow-bean-definition-overriding: true
+
+    delivery-auth:
+      client:
+        registration:
+          custom:
+            client-id: LHy8f3dChtFGw6sVFWNrH06mLS8a
+            client-secret: gmkr9J1FcP3XzXuA4QCdrVJKEmsa
+            scope: am_application_scope,delivery:manage
+            authorization-grant-type: client_credentials
+        provider:
+          custom:
+            token-uri: https://login-potesstest.comune.napoli.it/oauth2/token
+    
+    client:
+      default-uri: http://gemocl.infocamere.it/gemows/services/GemoService
+      user:
+        name: H9FAAPL1
+        password: Inverno21!
+    logging:
+      level:
+        root: FATAL
+        it.comune: DEBUG
+        org.springframework.security: DEBUG
+        org.springframework.ws: DEBUG
+      prefix:
+        request: '# INIZIO - %s - Request: '
+        response: '# FINE - %s - Response: '
+     #In questo parametro vanno inserite tutte le stringhe che rappresentano i campi che verranno esclusi dai log.
+      excludeValues: byteArray
+    
+    constants:
+      municipio: municipio0
+      infocamereValidityDays: 90
+      whiteListValidityDays: 3
+       
+    encryptionKey: servizionline.pem
+
+    application:
+      delivery-api:
+        base-path: http://api-delivery-server-service.potess-dev:9080
+    
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health, info, prometheus
+
+#Override dei valori presenti in values.yaml
+resources:
+     limits:
+       cpu: 250m
+       memory: 256Mi
+     requests:
+       cpu: 250m
+       memory: 256Mi
+
+probes:
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 120
+    periodSeconds: 60
+    successThreshold: 1
+    tcpSocket:
+      port: tcp
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 120
+    periodSeconds: 60
+    successThreshold: 1
+    tcpSocket:
+      port: tcp
+    timeoutSeconds: 1

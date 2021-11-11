@@ -1,0 +1,38 @@
+version: "3.5"
+
+services:
+  image_compressor:
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+    image: nginx_image_compressor
+    container_name: my-img-compressor
+    restart: unless-stopped
+    expose:
+      - 3000
+    env_file:
+      - .env
+    networks:
+      - my_network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: "nginx/Dockerfile-nginx"
+    image: nginx:stable
+    container_name: my-nginx-img-compressor
+    restart: unless-stopped
+    ports:
+      - "9080:9080"
+      - "8443:8443"
+    env_file:
+      - .env
+    networks:
+      - my_network
+        
+networks:
+  my_network:
+
+#volumes:
+#  sonarqube_data:
+#    name: data-svc-app_sonar_data

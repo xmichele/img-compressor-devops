@@ -1,0 +1,10 @@
+{{- if .Values.custom.envConfigMap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "my-helm.fullname" . }}-env
+data:
+{{- range $key, $val := .Values.custom.envConfigMap }}
+  {{ $key | indent 2}}: {{ $val | quote}}
+{{- end}}
+{{- end}}
